@@ -121,18 +121,35 @@ function GetSpawnPos(source)
 end
 
 function GetIdentifierWithoutLicense(Identifier)
-    return string.gsub(Identifier, "license", "")
+	if Config.UseSteamID then
+        return string.gsub(Identifier, "steam:", "")
+    else
+        return string.gsub(Identifier, "license:", "")
+    end 
 end
 
+-- This doesn't actually get the rockstarID it gets the ID you have wanted either rockstar or steam
 function GetRockstarID(playerId)
     local identifier
 
-    for k,v in ipairs(GetPlayerIdentifiers(playerId)) do
-        if string.match(v, 'license') then
-            identifier = v
-            break
-        end
-    end
+	-- Replace for kashacter
+	if Config.UseSteamID then
+		for k,v in ipairs(GetPlayerIdentifiers(playerId)) do
+			if string.match(v, 'steam:') then
+				-- print("es_extended:OnPlayerJoined STEAM key " .. k .. " Value: " .. v)
+				identifier = v
+				break
+			end
+		end
+	else
+		for k,v in ipairs(GetPlayerIdentifiers(playerId)) do
+			if string.match(v, 'license:') then
+				-- print("es_extended:OnPlayerJoined LICENSE key " .. k .. " Value: " .. v)
+				identifier = v
+				break
+			end
+		end
+	end
 
     return identifier
 end
